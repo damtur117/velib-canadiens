@@ -1,0 +1,26 @@
+name: Collecte Vélib Canadiens
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # relance de sécurité ; un seul passage tourne à la fois
+  workflow_dispatch:          # permet de lancer à la main depuis l'onglet Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collecte
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Identité pour les sauvegardes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+      - name: Relevés toutes les minutes
+        run: python3 collect.py
