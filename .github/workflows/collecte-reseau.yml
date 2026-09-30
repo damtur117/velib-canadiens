@@ -1,0 +1,26 @@
+name: Collecte Vélib réseau
+
+on:
+  schedule:
+    - cron: "15,45 * * * *"   # relance de sécurité ; un seul passage tourne à la fois
+  workflow_dispatch:           # permet de lancer à la main depuis l'onglet Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collecte-reseau
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Identité pour les sauvegardes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+      - name: Relevés de toutes les stations chaque minute
+        run: python3 collect_reseau.py
