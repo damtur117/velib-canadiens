@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Identité pour les sauvegardes
         run: |
           git config user.name "github-actions[bot]"
